@@ -18,7 +18,7 @@
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:reset": "supabase db reset",
-    "supabase:gen-types": "supabase gen types typescript --local > src/lib/database.types.ts",
+    "supabase:gen-types": "supabase gen types typescript --local > src/lib/database.types.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
