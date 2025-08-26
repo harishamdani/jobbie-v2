@@ -76,7 +76,7 @@ export function LoginForm() {
         if ('status' in error && error.status === 503) {
           errorMessage = 'Authentication service is temporarily unavailable. Please check if your Supabase project is active.';
         } else if ('message' in error) {
-          errorMessage = String((error as any).message);
+          errorMessage = String((error as { message: unknown }).message);
         }
       }
       
