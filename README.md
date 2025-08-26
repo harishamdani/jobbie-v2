@@ -1,128 +1,153 @@
-# Jobbie v2
+# JobBoard
 
-A modern job board application built with Next.js, React, and Supabase.
+A full-stack job board application built with Next.js and Supabase, where companies can post jobs and users can browse and apply for them.
 
 ## Features
 
-- Job posting and browsing
-- User authentication and profiles  
-- Job application management
-- Dashboard for job management
-- Responsive design
+- Authentication with user registration and login
+- Job posting, editing, and deletion for authenticated users
+- Public job browsing with filtering by location and job type
+- Job applications with resume upload functionality
+- User dashboard for managing posted jobs and viewing applications
+- Responsive design optimized for mobile and desktop
 
 ## Tech Stack
 
-- Next.js 15
-- React 19
-- TypeScript
-- Tailwind CSS
-- Supabase
-- Radix UI components
+- Frontend: Next.js 15 with App Router
+- Backend: Supabase (Database + Authentication + Storage)
+- Styling: Tailwind CSS v4 with Radix UI components
+- Form Handling: React Hook Form with Zod validation
+- Deployment: Vercel
 
-## Getting Started
+## Setup Instructions
 
-1. Install dependencies:
+### Prerequisites
+
+- Node.js 18+ or Bun
+- Supabase account
+- Git
+
+1. **Clone the Repository**
+   ```bash
+   git clone <repository-url>
+   cd jobboard
+   ```
+
+2. **Install Dependencies**
    ```bash
    npm install
+   # or use bun for faster installation
+   bun install
    ```
 
-2. Set up environment variables:
-   ```bash
-   cp .env.example .env.local
+3. **Environment Setup**
+   
+   Create a `.env.local` file in the root directory:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
    ```
 
-3. Configure Supabase:
-   ```bash
-   npm run supabase:start
-   ```
+4. **Database Setup**
+   - Create a new Supabase project at supabase.com
+   - Run the SQL commands from `supabase-setup.sql` in your Supabase SQL editor
+   - Set up storage policies using `supabase-storage-setup.sql`
 
-4. Run the development server:
+5. **Start Development Server**
    ```bash
    npm run dev
    ```
+   The application will be available at http://localhost:3010
 
-5. Open [http://localhost:3010](http://localhost:3010)
+6. **Run Tests (Optional)**
+   ```bash
+   npm run test:e2e
+   ```
 
-## Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run type-check` - Run TypeScript checks
+### Database Schema
 
-## Deployment
+- profiles: User profiles linked to Supabase Auth
+- jobs: Job postings with company details  
+- applications: Job applications with resume storage
+- Storage: Resume files in Supabase Storage
 
-The application can be deployed to Vercel or any Node.js hosting platform.
+### Authentication Flow
 
-## Deploying to Vercel
+The application uses Supabase Auth with the following flow:
+1. Users register/login via Supabase Auth
+2. Middleware protects dashboard routes
+3. Server-side auth checks for API routes
+4. Client-side auth state management
 
-You can reuse the same Supabase instance you already have. This app only needs the public Supabase URL and Anon key.
+## Approach & Technical Decisions
 
-Required env vars (set for Production and Preview):
+### Framework Choice
+Used Next.js App Router for React patterns and API integration. Added TypeScript for type safety.
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+### Backend Strategy
+Used Supabase for database, authentication, and file storage. Implemented Row Level Security for data access control.
 
-You can copy these from your existing project (Supabase Dashboard → Project Settings → API), or from another Vercel project that already uses this Supabase instance.
+### UI/UX Approach
+Built mobile-first responsive layouts. Used Radix UI for accessible components and Tailwind CSS for styling. Added Zod schemas for form validation on client and server.
 
-### Option A — Vercel Dashboard (recommended)
+### State Management
+Used React Hook Form for forms and Supabase client for database queries.
 
-1) Import the repo
-   - Go to Vercel → New Project → Import your Git repo for this project.
-   - Framework preset: Next.js (detected automatically).
-   - Build Command: `npm run build` (default)
-   - Output Directory: `.next` (default)
+## Available Scripts
 
-2) Set Environment Variables
-   - Add `NEXT_PUBLIC_SUPABASE_URL`
-   - Add `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - Add these in both Production and Preview environments.
-
-3) Deploy
-   - Click Deploy and wait for the build to finish.
-
-4) Post-deploy (optional)
-   - If you use OAuth providers later, add your Vercel domain(s) to Supabase → Authentication → URL Configuration (Redirect URLs).
-
-### Option B — Vercel CLI (from WSL)
-
-Prereqs: Node 18+ and `npm i -g vercel`.
-
-Link and deploy the project:
-
+Development:
 ```bash
-# In the project root
-vercel link
-vercel
+npm run dev              # Start dev server on port 3010
+npm run build           # Build for production
+npm run start           # Start production server
 ```
 
-Add env vars (repeat for Preview/Production as needed):
-
+Code Quality:
 ```bash
-vercel env add NEXT_PUBLIC_SUPABASE_URL
-vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY
+npm run lint            # Run ESLint
+npm run lint:fix        # Fix ESLint issues
+npm run type-check      # TypeScript type checking
+npm run format          # Format with Prettier
 ```
 
-If you already have a working Vercel project (e.g., another repo using the same Supabase):
-
+Testing:
 ```bash
-# Pull env from the existing project into a local file
-vercel env pull .env.vercel --project <existing-project-name>
-
-# Use the values to add to this new project
-# (You’ll be prompted for each value)
-vercel env add NEXT_PUBLIC_SUPABASE_URL
-vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY
+npm run test:e2e        # Run Playwright tests
+npm run test:e2e:ui     # Run tests with UI
+npm run test:e2e:headed # Run tests in headed mode
 ```
 
-Finally, trigger a deployment:
-
+Supabase:
 ```bash
-vercel --prod
+npm run supabase:start  # Start local Supabase
+npm run supabase:reset  # Reset local database
+npm run supabase:gen-types # Generate TypeScript types
 ```
 
-### Notes
+## What would you improve if given more time?
 
-- `vercel.json` pins functions to Node.js 22 and region `iad1`. You can change `regions` to be closer to your users or your Supabase region.
-- This project uses only the public anon key on the server via RLS-secured policies. Don’t set your Supabase service role key in Vercel unless you introduce admin/server tasks that need it.
+### User Interface
+- Better loading states and skeleton screens
+- Dark mode theme toggle
+- Improved mobile navigation
+- Image uploads for company logos
+
+### User Experience  
+- Job bookmarking and saved searches
+- Email notifications for new job postings
+- Application status updates (pending, reviewed, rejected)
+- Basic job recommendations
+
+### Additional Features
+- Company profile pages
+- Resume builder tool
+- Job posting expiration dates
+- Simple analytics dashboard for recruiters
+
+### Code Quality
+- Add more comprehensive unit tests
+- Add e2e testing with Playwright
+- Improve error handling and user feedback
+- Code splitting for better performance
+- Better TypeScript type coverage
